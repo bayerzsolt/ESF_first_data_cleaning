@@ -1,35 +1,36 @@
 library(tidyverse)
-path <- "data/raw/2021-2027_Finances_Detailed_Planned_vs_Implemented_(timeseries)_20261022.xls.csv"
 
-raw <- read_csv(path, col_types = cols(.default = col_character()))
-raw <- janitor::clean_names(raw)
+#How much of the ESF money planned for 2021-2027 is actually being implemented,
+#and how does that differ by country, fund and policy area?
 
-dim(raw)
-names(raw)
+social <- read_csv("2021-2027_Finances_Detailed_Planned_vs_Implemented__timeseries__20261022_xls.csv")
 
-count(raw, fund, sort = TRUE)
-count(raw, ms, sort = TRUE)
-count(raw, tod_cycle, tod_year, tod_reference_version)
-count(raw, dimension_type, sort = TRUE)
+nrow(social)
+problems(social)
+social |> count(fund)
+social |> count(is_latest_tod_cycle)
 
-esf <- raw |>
-  filter(fund == "ESF+", is_latest_tod_cycle == "Y")
-dim(esf)
-count(esf, ms, sort = TRUE)
+#Filter for ESF+ stuff
+social_esf <- social |>
+  filter(fund == "ESF+",
+         is_latest_tod_cycle == "Y")
+nrow(social_esf)
 
-esf_raw <- esf |> select(
-  ms, ms_name, cci, programme_short_title, programme_status, programme_version,
-  programme_adoption_date, fund, category_region_name, tod_cycle, tod_year,
-  tod_reference_version, priority_code, priority_name, pol_obj_short_name,
-  spec_obj_short_name, dimension_type, category_short_title, category_code,
-  cofinancing_rate, eu_planned, total_planned, total_decided, total_spending,
-  number_of_operations
-)
+social_esf |> distinct() |> nrow() 
 
-count(raw, is_latest_tod_cycle)                  # what other values exist besides "Y"?
-count(esf_raw, tod_cycle, tod_reference_version) # should be one cycle, maybe a few versions
-count(esf_raw, dimension_type)                   # probably only "Intervention Field"
-janitor::get_dupes(esf_raw, cci, priority_code, category_code)
+social_esf |>
+  group_by(cci, priority_code, spec_obj_code, category_code, category_region_name) |>
+  filter(n() > 1) |>
+  arrange(cci, priority_code, category_code) |>
+  select(cci, priority_code, category_code, `Total Planned`, `Total spending`)
 
+esf_clean <- social_esf |> distinct()
+  by_country <- esf_clean |>
+    group_by(ms_name) |>
+    summarise(planned = sum(`Total Planned`),
+              spent   = sum(`Total spending`),
+              rate    = spent / planned) |>
+    arrange(desc(rate))
 
-
+  by_country |>
+    print(n = 27)
