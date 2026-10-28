@@ -34,3 +34,32 @@ esf_clean <- social_esf |> distinct()
 
   by_country |>
     print(n = 27)
+  
+  
+  ggplot(by_country, aes(x = rate, y = reorder(ms_name, rate))) +
+    geom_col() +
+    scale_x_continuous(labels = scales::percent) +
+    labs(title = "ESF+ spending as a share of planned funding 2021-2027",
+         x = "Share of planned funding spent",
+         y = NULL,
+         caption = "Source: Cohesion Open Data Platform, 22 Oct 2026") +
+    theme_minimal()
+  ggsave("absorption_by_country.png", width = 8, height = 7, dpi = 300)
+  
+  by_objective <- esf_clean |>
+    group_by(spec_obj_name) |>
+    summarise(planned = sum(`Total Planned`),
+              spent   = sum(`Total spending`),
+              rate    = spent / planned) |>
+    arrange(desc(planned))
+  by_objective
+  
+  ggplot(by_objective, aes(x = rate, y = reorder(spec_obj_name, rate))) +
+    geom_col() +
+    scale_x_continuous(labels = scales::percent) +
+    labs(title = "ESF+ spending by specific objective (2021-2027)",
+         x = "Share of planned funding spent", y = NULL,
+         caption = "Source: Cohesion Open Data Platform, 22 Oct 2026") +
+    theme_minimal()
+  ggsave("esf_spending_by_specific_objective.png", width = 8, height = 7, dpi = 300)
+  
