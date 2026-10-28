@@ -4,4 +4,5 @@ The file prepares the data to answer the question of how much of the planned ESF
 
 This is my first project of this kind, so it's nature is only exploratory
 
-Source of original dataset:
+Source of original dataset: 
+Cohesion Open Data Platform, “2021-2027 Finances Detailed Planned vs Implemented (timeseries)”, downloaded October 22, 2026
