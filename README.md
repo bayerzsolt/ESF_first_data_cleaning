@@ -7,6 +7,8 @@ This is my first project of this kind, so it's nature is only exploratory
 Source of original dataset: 
 Cohesion Open Data Platform, “2021-2027 Finances Detailed Planned vs Implemented (timeseries)”, downloaded October 22, 2026
 
+<img width="2400" height="2100" alt="absorption_by_country" src="https://github.com/user-attachments/assets/aac413ff-5785-4aa3-b8fc-5c6e71fe2e82" />
+
 
 <img width="2400" height="2100" alt="esf_spending_by_specific_objective" src="https://github.com/user-attachments/assets/f01d2d53-f8d7-42c3-a012-3cd809c842b8" />
 
